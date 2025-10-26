@@ -39,6 +39,7 @@
   },
   "packageManager": "npm@10.2.4",
   "devDependencies": {
+    "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.27.1",
     "eslint": "^9.13.0",
     "rimraf": "^6.0.1",
