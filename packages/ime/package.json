@@ -1,7 +1,7 @@
 {
   "name": "@writegeez/ime",
   "version": "0.0.1",
-  "description": "WriteGeez IME core library (Tigrinya/Ge'ez input).",
+  "description": "WriteGeez IME core library (Ge'ez language input).",
   "license": "MIT",
   "repository": {
     "type": "git",
