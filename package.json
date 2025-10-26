@@ -1,14 +1,14 @@
 {
   "name": "writegeez-monorepo",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Web based Input Method Editor for Ge'ez and related tooling.",
   "workspaces": [
     "packages/*",
     "examples/*"
   ],
   "scripts": {
-    "build": "npm run -ws --if-present build",
+    "build": "npm run --workspaces --if-present build",
     "clean": "rimraf **/dist",
     "lint": "eslint .",
     "test": "vitest",

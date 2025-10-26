@@ -1,6 +1,6 @@
 {
   "name": "@writegeez/ime",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "WriteGeez IME core library (Tigrinya/Ge'ez input).",
   "license": "MIT",
   "type": "module",
@@ -19,6 +19,6 @@
   "publishConfig": { "access": "public" },
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs --clean",
-    "dev": "tsup src/index.ts --watch --dts --format esm,cjs"
+    "dev": "tsup src/index.ts --dts --format esm,cjs --watch"
   }
 }
