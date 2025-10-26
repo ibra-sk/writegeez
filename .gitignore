@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+out/
+build/
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# TypeScript
+*.tsbuildinfo
+
+# Coverage
+coverage/
+
+# Env files (keep examples)
+.env
+.env.*.local
+!.env.example
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Package archives
+*.tgz
+
+# Tool caches (add as you adopt them)
+.next/
+.vercel/
+.storybook-out/
+storybook-static/
+.playwright/
+.vite/
+.turbo/
+parcel-cache/
