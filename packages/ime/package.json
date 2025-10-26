@@ -3,6 +3,13 @@
   "version": "0.0.1",
   "description": "WriteGeez IME core library (Tigrinya/Ge'ez input).",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ibra-sk/writegeez",
+    "directory": "packages/ime"
+  },
+  "bugs": { "url": "https://github.com/ibra-sk/writegeez/issues" },
+  "homepage": "https://github.com/ibra-sk/writegeez#readme",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
