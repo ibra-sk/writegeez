@@ -1,6 +1,6 @@
 {
   "name": "@writegeez/ime",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "WriteGeez IME core library (Ge'ez language input).",
   "license": "MIT",
   "repository": {
@@ -8,7 +8,9 @@
     "url": "https://github.com/ibra-sk/writegeez",
     "directory": "packages/ime"
   },
-  "bugs": { "url": "https://github.com/ibra-sk/writegeez/issues" },
+  "bugs": {
+    "url": "https://github.com/ibra-sk/writegeez/issues"
+  },
   "homepage": "https://github.com/ibra-sk/writegeez#readme",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -22,8 +24,13 @@
     }
   },
   "sideEffects": false,
-  "files": ["dist", "README.md"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs --clean",
     "dev": "tsup src/index.ts --dts --format esm,cjs --watch"
