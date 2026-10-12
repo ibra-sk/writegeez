@@ -1,9 +1,5 @@
-import {
-	InputMethod,
-	InputMethodSpec,
-	SymbolMap,
-} from "./input-methods/interfaces";
-import { buildReverseMap, isLatinChar } from "./utils";
+import { InputMethodSpec } from "./input-methods/interfaces";
+import { Transliterator } from "./transliterator";
 
 type StaticRangeLike = {
 	startContainer: Node;
@@ -13,8 +9,7 @@ type StaticRangeLike = {
 };
 
 export default class WebGeezIME {
-	private inputMap: InputMethod;
-	private geezToLatinMap: Record<string, string>;
+	private transliterator: Transliterator;
 
 	private activeElement: HTMLElement | null = null;
 	private elementType: "input" | "div" | null = null;
@@ -36,8 +31,7 @@ export default class WebGeezIME {
 		element: HTMLElement,
 		options?: { enabled?: boolean }
 	) {
-		this.inputMap = inputMethodSpec.map;
-		this.geezToLatinMap = buildReverseMap(this.inputMap);
+		this.transliterator = new Transliterator(inputMethodSpec);
 		if (typeof options?.enabled === "boolean")
 			this.enabled = options.enabled;
 		this.attachToElement(element);
@@ -105,35 +99,8 @@ export default class WebGeezIME {
 		prevChar: string,
 		newChar: string
 	): { output: string; modifiesPrev: boolean } {
-		let prevLatinChar = prevChar;
-		if (!isLatinChar(prevChar))
-			prevLatinChar = this.geezToLatinMap[prevChar] || prevChar;
-
-		let currentNode: SymbolMap | null = null;
-		let tempNode: InputMethod = this.inputMap;
-
-		for (const char of prevLatinChar) {
-			if (tempNode[char]) {
-				currentNode = tempNode[char];
-				tempNode = currentNode.next || {};
-			} else {
-				currentNode = null;
-				break;
-			}
-		}
-
-		if (currentNode?.next && currentNode.next[newChar]) {
-			return {
-				output: currentNode.next[newChar].value || newChar,
-				modifiesPrev: true,
-			};
-		}
-
-		const newNode = this.inputMap[newChar];
-		if (newNode)
-			return { output: newNode.value || newChar, modifiesPrev: false };
-
-		return { output: newChar, modifiesPrev: false };
+		const { replace, text } = this.transliterator.feed(prevChar, newChar);
+		return { output: text, modifiesPrev: replace };
 	}
 
 	private handleBeforeInput(event: InputEvent): void {

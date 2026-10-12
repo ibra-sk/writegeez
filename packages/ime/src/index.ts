@@ -8,3 +8,5 @@ export { TigrinyaEritrean } from "./input-methods";
 
 import * as core from "./webGeezIme";
 export const ime = core;
+
+export { Transliterator } from "./transliterator";
