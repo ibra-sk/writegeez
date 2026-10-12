@@ -136,6 +136,28 @@ new WriteGeezIME({ map: inputMap }, element);
 
 ---
 
+## 🎛️ UI Components
+
+Prefer not to wire the engine to a field yourself? `@writegeez/webui` ships
+headless, Radix-style React primitives plus a styled composer:
+
+```bash
+npm install @writegeez/webui @writegeez/ime
+```
+
+```tsx
+import { GeezComposer } from "@writegeez/webui";
+import "@writegeez/webui/styles.css";
+
+<GeezComposer placeholder="Ask a Question.." onSubmit={(value) => send(value)} />;
+```
+
+Enter submits, Shift+Enter adds a newline, and Ctrl/Cmd+Space toggles the IME.
+Every part also ships unstyled with `asChild` support — see
+[`packages/webui/README.md`](packages/webui/README.md).
+
+---
+
 ## 🧪 Development
 
 Clone the repo and run locally:
@@ -145,10 +167,11 @@ git clone https://github.com/ibra-sk/writegeez.git
 cd writegeez
 npm i
 npm run dev -w @writegeez/ime
+npm run dev -w @writegeez/webui
 npm run dev -w writegeez-example-basic
 ```
 
-This will watch-build the IME and open the live example app.
+This will watch-build the IME and the UI package, and open the live example app.
 
 ---
 
@@ -157,7 +180,7 @@ This will watch-build the IME and open the live example app.
 | Package | Description | Status |
 |----------|--------------|--------|
 | `@writegeez/ime` | Core Input Method Engine | ✅ Published |
-| `@writegeez/webui` | (Planned) Web UI toolkit | 🚧 Coming soon |
+| `@writegeez/webui` | React UI primitives + styled composer | ✅ Available |
 | `@writegeez/sentiment` | (Planned) Sentiment analysis module | 🚧 Coming soon |
 
 ---

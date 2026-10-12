@@ -25,3 +25,7 @@ export function buildReverseMap(
 export function isLatinChar(char: string): boolean {
     return (char >= "a" && char <= "z") || (char >= "A" && char <= "Z");
 }
+/** The word at the end of `text`: everything after the last space or punctuation mark. */
+export function trailingWord(text: string): string {
+    return /[^\s\p{P}]*$/u.exec(text)![0];
+}

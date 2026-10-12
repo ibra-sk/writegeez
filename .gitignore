@@ -42,3 +42,6 @@ storybook-static/
 .vite/
 .turbo/
 parcel-cache/
+
+# Misc
+docs/

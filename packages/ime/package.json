@@ -21,7 +21,8 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./input-methods/*.json": "./dist/input-methods/*.json"
   },
   "sideEffects": false,
   "files": [
@@ -32,7 +33,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup src/index.ts --dts --format esm,cjs --clean",
+    "build": "tsup src/index.ts --dts --format esm,cjs --clean && node scripts/emit-json.mjs",
     "dev": "tsup src/index.ts --dts --format esm,cjs --watch"
   }
 }

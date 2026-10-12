@@ -1,9 +1,6 @@
-import {
-	InputMethod,
-	InputMethodSpec,
-	SymbolMap,
-} from "./input-methods/interfaces";
-import { buildReverseMap, isLatinChar } from "./utils";
+import { InputMethodSpec } from "./input-methods/interfaces";
+import { Transliterator } from "./transliterator";
+import { trailingWord } from "./utils";
 
 type StaticRangeLike = {
 	startContainer: Node;
@@ -13,8 +10,7 @@ type StaticRangeLike = {
 };
 
 export default class WebGeezIME {
-	private inputMap: InputMethod;
-	private geezToLatinMap: Record<string, string>;
+	private transliterator: Transliterator;
 
 	private activeElement: HTMLElement | null = null;
 	private elementType: "input" | "div" | null = null;
@@ -36,8 +32,7 @@ export default class WebGeezIME {
 		element: HTMLElement,
 		options?: { enabled?: boolean }
 	) {
-		this.inputMap = inputMethodSpec.map;
-		this.geezToLatinMap = buildReverseMap(this.inputMap);
+		this.transliterator = new Transliterator(inputMethodSpec);
 		if (typeof options?.enabled === "boolean")
 			this.enabled = options.enabled;
 		this.attachToElement(element);
@@ -105,35 +100,51 @@ export default class WebGeezIME {
 		prevChar: string,
 		newChar: string
 	): { output: string; modifiesPrev: boolean } {
-		let prevLatinChar = prevChar;
-		if (!isLatinChar(prevChar))
-			prevLatinChar = this.geezToLatinMap[prevChar] || prevChar;
+		const { replace, text } = this.transliterator.feed(prevChar, newChar);
+		return { output: text, modifiesPrev: replace };
+	}
 
-		let currentNode: SymbolMap | null = null;
-		let tempNode: InputMethod = this.inputMap;
+	/** The word before the caret, e.g. `"ሰላ"` while typing `ሰላም`. */
+	currentWord(): string {
+		return trailingWord(this.textBeforeCaret());
+	}
 
-		for (const char of prevLatinChar) {
-			if (tempNode[char]) {
-				currentNode = tempNode[char];
-				tempNode = currentNode.next || {};
-			} else {
-				currentNode = null;
-				break;
-			}
+	/**
+	 * Write `text` at the caret, as if typed. With `replaceWord`, the word
+	 * before the caret is replaced (accepting a suggestion). Returns false
+	 * while an OS IME composition is in progress, so it cannot be corrupted.
+	 */
+	insertText(text: string, options?: { replaceWord?: boolean }): boolean {
+		if (!this.activeElement || this.composing) return false;
+		const length = options?.replaceWord ? this.currentWord().length : 0;
+		if (length) this.replaceGeezChar(text, length);
+		else this.insertGeezChar(text);
+		this.dispatchSyntheticInput(length ? "insertReplacementText" : "insertText");
+		return true;
+	}
+
+	private textBeforeCaret(): string {
+		if (!this.activeElement) return "";
+		if (this.elementType === "input") {
+			const el = this.activeElement as HTMLInputElement | HTMLTextAreaElement;
+			return el.value.slice(0, el.selectionStart ?? el.value.length);
 		}
+		if (!this.isContentEditable) return "";
 
-		if (currentNode?.next && currentNode.next[newChar]) {
-			return {
-				output: currentNode.next[newChar].value || newChar,
-				modifiesPrev: true,
-			};
+		// Typing inserts one text node per character; merge them so a word is one node.
+		this.activeElement.normalize();
+		const sel = window.getSelection();
+		if (!sel) return "";
+		if (!sel.rangeCount || !this.activeElement.contains(sel.getRangeAt(0).startContainer)) {
+			const range = document.createRange();
+			range.selectNodeContents(this.activeElement);
+			range.collapse(false);
+			sel.removeAllRanges();
+			sel.addRange(range);
 		}
-
-		const newNode = this.inputMap[newChar];
-		if (newNode)
-			return { output: newNode.value || newChar, modifiesPrev: false };
-
-		return { output: newChar, modifiesPrev: false };
+		const range = sel.getRangeAt(0);
+		const { node, offset } = this.resolveTextPosition(range.startContainer, range.startOffset);
+		return node ? (node.textContent ?? "").slice(0, offset) : "";
 	}
 
 	private handleBeforeInput(event: InputEvent): void {
@@ -201,7 +212,8 @@ export default class WebGeezIME {
 		}
 	}
 
-	private replaceGeezChar(char: string): void {
+	/** Replace `length` UTF-16 units before the caret; defaults to the previous grapheme. */
+	private replaceGeezChar(char: string, length?: number): void {
 		if (!this.activeElement) return;
 
 		if (this.elementType === "input") {
@@ -209,7 +221,10 @@ export default class WebGeezIME {
 				| HTMLInputElement
 				| HTMLTextAreaElement;
 			const caret = target.selectionStart ?? 0;
-			const start = this.findPrevGraphemeStart(target.value, caret);
+			const start =
+				length === undefined
+					? this.findPrevGraphemeStart(target.value, caret)
+					: Math.max(0, caret - length);
 			target.setRangeText(char, start, caret, "end");
 		} else if (this.isContentEditable) {
 			const sel = window.getSelection();
@@ -222,7 +237,10 @@ export default class WebGeezIME {
 			);
 			if (node) {
 				const text = node.textContent ?? "";
-				const start = this.findPrevGraphemeStart(text, offset);
+				const start =
+					length === undefined
+						? this.findPrevGraphemeStart(text, offset)
+						: Math.max(0, offset - length);
 				const r = document.createRange();
 				r.setStart(node, start);
 				r.setEnd(node, offset);

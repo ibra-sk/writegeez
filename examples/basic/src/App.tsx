@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { GeezIME } from "@writegeez/ime";
 import { InputMethodSpec, TigrinyaEritrean } from "@writegeez/ime";
+import { ComposerDemo } from "./ComposerDemo";
+import "./demo.css";
 
 export function App() {
 	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -68,6 +70,11 @@ export function App() {
 	return (
 		<div style={{ padding: 16, fontFamily: "system-ui", maxWidth: 720 }}>
 			<h1>@writegeez/ime – demo</h1>
+
+			<section style={{ marginTop: 16 }}>
+				<h2 style={{ fontSize: 18 }}>@writegeez/webui – Composer</h2>
+				<ComposerDemo />
+			</section>
 
 			<section style={{ marginTop: 16 }}>
 				<label style={{ display: "block", marginBottom: 8 }}>

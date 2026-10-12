@@ -1,0 +1,61 @@
+{
+  "name": "@writegeez/webui",
+  "version": "0.0.1",
+  "description": "Headless, Radix-style React UI primitives for the WriteGeez IME.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ibra-sk/writegeez",
+    "directory": "packages/webui"
+  },
+  "bugs": {
+    "url": "https://github.com/ibra-sk/writegeez/issues"
+  },
+  "homepage": "https://github.com/ibra-sk/writegeez#readme",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format esm,cjs --clean --external react --external react-dom && cp src/styles.css dist/styles.css",
+    "dev": "tsup src/index.ts --dts --format esm,cjs --external react --external react-dom --watch --onSuccess \"cp src/styles.css dist/styles.css\""
+  },
+  "dependencies": {
+    "@writegeez/ime": "0.0.2"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.6",
+    "@types/react-dom": "^18.3.0"
+  },
+  "keywords": [
+    "geez",
+    "ime",
+    "react",
+    "headless-ui",
+    "tigrinya",
+    "amharic"
+  ]
+}
