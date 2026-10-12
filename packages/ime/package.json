@@ -1,6 +1,6 @@
 {
   "name": "@writegeez/ime",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "WriteGeez IME core library (Ge'ez language input).",
   "license": "MIT",
   "repository": {

@@ -1,6 +1,6 @@
 {
   "name": "@writegeez/webui",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Headless, Radix-style React UI primitives for the WriteGeez IME.",
   "license": "MIT",
   "repository": {
@@ -40,7 +40,7 @@
     "dev": "tsup src/index.ts --dts --format esm,cjs --external react --external react-dom --watch --onSuccess \"cp src/styles.css dist/styles.css\""
   },
   "dependencies": {
-    "@writegeez/ime": "0.0.2"
+    "@writegeez/ime": "0.1.0"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
