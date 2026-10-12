@@ -4,9 +4,8 @@ export type * from "./webGeezIme";
 
 export type { InputMethod, InputMethodSpec, SymbolMap } from "./input-methods/interfaces";
 
-export { TigrinyaEritrean } from "./input-methods";
+export { TigrinyaEritrean, inputMethods, getInputMethod } from "./input-methods";
 
 import * as core from "./webGeezIme";
 export const ime = core;
-
 export { Transliterator } from "./transliterator";
