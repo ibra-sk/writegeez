@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import TigrinyaEritrean from "../src/input-methods/ti-ER";
 import { Transliterator } from "../src/transliterator";
-import { buildReverseMap, isLatinChar } from "../src/utils";
+import { buildReverseMap, isLatinChar, trailingWord } from "../src/utils";
 
 const rows: { keys: string; text: string }[] = readFileSync(
 	new URL("../fixtures/ti-ER.jsonl", import.meta.url),
@@ -81,5 +81,16 @@ describe("utils", () => {
 	it("isLatinChar accepts only ASCII letters", () => {
 		expect(["a", "Z"].every(isLatinChar)).toBe(true);
 		expect(["ስ", "1", " ", "é", ""].some(isLatinChar)).toBe(false);
+	});
+
+	it("trailingWord stops at whitespace and Latin or Ethiopic punctuation", () => {
+		expect(trailingWord("")).toBe("");
+		expect(trailingWord("ሰላም")).toBe("ሰላም");
+		expect(trailingWord("ከመይ ሰላ")).toBe("ሰላ");
+		expect(trailingWord("ሰላም።ከ")).toBe("ከ");
+		expect(trailingWord("ሰላም፡ከመ")).toBe("ከመ");
+		expect(trailingWord("ሰላም፣")).toBe("");
+		expect(trailingWord("hi, there")).toBe("there");
+		expect(trailingWord("ሰላም\nከ")).toBe("ከ");
 	});
 });
