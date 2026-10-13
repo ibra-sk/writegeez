@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           registry-url: https://registry.npmjs.org
           cache: 'npm'
           cache-dependency-path: |
@@ -31,13 +31,12 @@ jobs:
 
       - name: Install
         run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build all workspaces
         run: npm run build
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Test
+        run: npx vitest run
 
       - name: Version packages (Changesets)
         run: npx changeset version
@@ -52,8 +51,7 @@ jobs:
           git commit -m "chore: version packages" || echo "No version changes"
           git push
 
-      - name: Publish to npm (with provenance)
+      # Trusted publishing (OIDC via id-token: write): no npm token needed, and
+      # provenance is attached automatically. Needs npm >= 11.5.1 (Node 24 ships it).
+      - name: Publish to npm
         run: npx changeset publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
